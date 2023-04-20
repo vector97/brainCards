@@ -12,16 +12,17 @@ const initApp = async () => {
   const headerObj = createHeader(headerParent);
   const categoryObj = createCategory(app);
   const editCategoryObj = createEditCategory(app);
-  const cardObj = createPairs();
+  const pairsObj = createPairs(app);
 
   const allSectionUnmount = () => {
-    [categoryObj, editCategoryObj].forEach(obj => obj.unmount());
+    [categoryObj, editCategoryObj, pairsObj].forEach(obj => obj.unmount());
   };
 
   const renderIndex = async e => {
     e?.preventDefault();
     allSectionUnmount();
     const categories = await fetchCategories();
+    headerObj.updateHeaderTitle('Категории');
 
     if (categories.error) {
       app.append(createElement('p', {
@@ -54,7 +55,21 @@ const initApp = async () => {
       editCategoryObj.mount(dataCards);
       return;
     }
+
+    if (target.closest('.category__del')) {
+      console.log('удалить');
+      return;
+    }
+
+    if (categoryItem) {
+      const dataCards = await fetchCards(categoryItem.dataset.id);
+      allSectionUnmount();
+      headerObj.updateHeaderTitle(dataCards.title);
+      pairsObj.mount(dataCards);
+    }
   });
+
+  pairsObj.btnReturn.addEventListener('click', renderIndex);
 };
 
 initApp();

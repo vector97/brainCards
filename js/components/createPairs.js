@@ -1,7 +1,7 @@
 import { createElement } from '../helpers/createElement.js';
 
-export const createPairs = () => {
-  const card = createElement('section', {
+export const createPairs = (app) => {
+  const pairs = createElement('section', {
     className: 'card section-offset',
   });
 
@@ -30,7 +30,19 @@ export const createPairs = () => {
 
   btnCard.append(cardFront, cardBack);
   container.append(btnReturn, btnCard);
-  card.append(container);
+  pairs.append(container);
 
-  return card;
+  const mount = data => {
+    app.append(pairs);
+  };
+
+  const unmount = () => {
+    pairs.remove();
+  };
+
+  return {
+    btnReturn,
+    mount,
+    unmount,
+  };
 };
